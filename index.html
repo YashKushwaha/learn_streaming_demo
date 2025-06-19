@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Streaming Echo</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    input, button { font-size: 1.2rem; margin-right: 0.5rem; }
+    #output { margin-top: 1rem; font-size: 1.5rem; color: darkblue; }
+  </style>
+</head>
+<body>
+  <h2>Echo Stream</h2>
+  <input type="text" id="message" placeholder="Type a message" />
+  <button onclick="send()">Send</button>
+
+  <div id="output"></div>
+
+  <script>
+    async function send() {
+      const msg = document.getElementById("message").value;
+      const output = document.getElementById("output");
+      output.innerHTML = ""; // clear previous
+
+      const response = await fetch(`http://localhost:8000/echo?message=${encodeURIComponent(msg)}`);
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        output.innerHTML += decoder.decode(value, { stream: true });
+      }
+    }
+  </script>
+</body>
+</html>
