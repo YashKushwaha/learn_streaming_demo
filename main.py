@@ -16,17 +16,17 @@ async def root(request: Request):
         "chat_endpoint": "/echo"
     })
 
+async def llm_call(message):
+    for word in message.split():
+        yield word + " "
+        await asyncio.sleep(0.3)  # simulate delay
+
 @app.post("/echo")
 async def echo_stream(request: Request):
     data = await request.json()
     message = data.get("message", "")
-
-    async def word_stream():
-        for word in message.split():
-            yield word + " "
-            await asyncio.sleep(0.3)  # simulate delay
-
-    return StreamingResponse(word_stream(), media_type="text/plain")
+    dummy_llm_response = llm_call(message)
+    return StreamingResponse(dummy_llm_response, media_type="text/plain")
 
 
 if __name__ == "__main__":
