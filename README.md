@@ -56,3 +56,9 @@ if (done) break;
 output.innerHTML += decoder.decode(value, { stream: true });
 }
 ```
+
+### Project Structure
+
+Two main files
+- `main.py` - Contains the FastAPI app
+- `index.html` - Contains the UI
